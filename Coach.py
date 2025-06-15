@@ -35,6 +35,7 @@ class Coach():
         log_dir = os.path.join("runs", "coach_learn")
         self.writer = SummaryWriter(log_dir=log_dir)
         self.learn_iteration = 0
+        self.total_training_examples = 0
 
     def executeEpisode(self):
         """
@@ -70,6 +71,7 @@ class Coach():
             sym = self.game.getSymmetries(canonicalBoard, pi)
             for b, p in sym:
                 trainExamples.append([b, self.curPlayer, p, None])
+            #print(f"Step {episodeStep}: added {len(sym)} samples, total so far: {len(trainExamples)}")
 
             action = np.random.choice(len(pi), p=pi)
             board, self.curPlayer = self.game.getNextState(board, self.curPlayer, action)
@@ -97,16 +99,27 @@ class Coach():
 
                 for _ in tqdm(range(self.args.numEps), desc="Self Play"):
                     self.mcts = MCTS(self.game, self.nnet, self.args)  # reset search tree
-                    iterationTrainExamples += self.executeEpisode()
+                    # 使用 extend 替代 +=，对 deque 来说更标准和高效
+                    iterationTrainExamples.extend(self.executeEpisode())
+                    # iterationTrainExamples 的长度在每次 extend 后都会受到 maxlen 的限制
+                    #print(f"[Info] Iteration generated {len(iterationTrainExamples)} training samples.")
 
                 # save the iteration examples to the history
                 self.trainExamplesHistory.append(iterationTrainExamples)
+                # *** 修改内容 2: 更新总样本计数器 ***
+                self.total_training_examples += len(iterationTrainExamples)
 
-            if len(self.trainExamplesHistory) > self.args.numItersForTrainExamplesHistory:
+            #if len(self.trainExamplesHistory) > self.args.numItersForTrainExamplesHistory:
+            #    log.warning(
+            #        f"Removing the oldest entry in trainExamples. len(trainExamplesHistory) = {len(self.trainExamplesHistory)}")
+            #    self.trainExamplesHistory.pop(0)
+            while self.total_training_examples > self.args.maxTotalTrainingExamples and len(
+                    self.trainExamplesHistory) > 0:
+                removed_deque = self.trainExamplesHistory.pop(0)  # 移除最旧的迭代样本
+                self.total_training_examples -= len(removed_deque)  # 从总计数中减去
                 log.warning(
-                    f"Removing the oldest entry in trainExamples. len(trainExamplesHistory) = {len(self.trainExamplesHistory)}")
-                self.trainExamplesHistory.pop(0)
-            # backup history to a file
+                    f"Removed oldest iteration's examples. Current total samples: {self.total_training_examples}"
+                )
             # NB! the examples were collected using the model from the previous iteration, so (i-1)
             self.saveTrainExamples(i - 1)
 
@@ -177,8 +190,34 @@ class Coach():
                 self.trainExamplesHistory = Unpickler(f).load()
             log.info('Loading done!')
 
+            self.total_training_examples = sum(len(d) for d in self.trainExamplesHistory)
+            log.info(
+                f"Loaded {len(self.trainExamplesHistory)} iterations, total samples: {self.total_training_examples}")
+
+            # 2. 在加载后立即执行清理
+            self._prune_training_examples()
+
+            # --- 修改结束 ---
+
             # examples based on the model were already collected (loaded)
             self.skipFirstSelfPlay = True
+
+    def _prune_training_examples(self):
+        """
+        Private helper method to prune trainExamplesHistory
+        to ensure total_training_examples stays within maxTotalTrainingExamples.
+        """
+        initial_total = self.total_training_examples
+        while self.total_training_examples > self.args.maxTotalTrainingExamples and len(self.trainExamplesHistory) > 0:
+            removed_deque = self.trainExamplesHistory.pop(0)  # 移除最旧的迭代样本
+            self.total_training_examples -= len(removed_deque)  # 从总计数中减去
+            log.warning(
+                f"Pruning: Removed oldest iteration's examples. Current total samples: {self.total_training_examples}"
+            )
+        if initial_total > self.args.maxTotalTrainingExamples and self.total_training_examples <= self.args.maxTotalTrainingExamples:
+            log.info(
+                f"Successfully pruned training examples from {initial_total} to {self.total_training_examples} samples.")
+    # --- 辅助方法结束 ---
 
 if __name__=="__main__":
     game = Game()  # 你的棋类游戏类
