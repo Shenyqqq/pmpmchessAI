@@ -47,16 +47,32 @@ class GameForNNet():
         return np.array(valids)
 
     def getGameEnded(self, board, player):
-        self._load_board_state(board)
         if not self.game.game_over:
-            return 0  # 游戏未结束
+            return 0.0
+        player1_score = self.game.control_black
+        player2_score = self.game.control_white
 
-        if self.game.winner == player:
-            return 1
-        elif self.game.winner == -player:
-            return -1
-        else:
-            return 1e-4
+        score_diff_p1_perspective = player1_score - player2_score
+
+        rows, cols = self.getBoardSize()
+        board_cells_total = rows * cols
+
+        normalized_score_diff = 0.0
+        if board_cells_total > 0:
+            normalized_score_diff = score_diff_p1_perspective / board_cells_total
+
+        final_reward_for_p1 = 1e-4
+
+        if self.game.winner == 0:
+            final_reward_for_p1 = 1e-4
+        elif self.game.winner == 1:
+            final_reward_for_p1 = 0.5 + (normalized_score_diff * 0.5)
+            final_reward_for_p1 = min(final_reward_for_p1, 1.0)
+        elif self.game.winner == -1:
+            final_reward_for_p1 = -0.5 + (normalized_score_diff * 0.5)
+            final_reward_for_p1 = max(final_reward_for_p1, -1.0)
+
+        return final_reward_for_p1 * player
 
 
     def getCanonicalForm(self, board, player):
