@@ -72,6 +72,7 @@ class Coach():
             for b, p in sym:
                 trainExamples.append([b, self.curPlayer, p, None])
             #print(f"Step {episodeStep}: added {len(sym)} samples, total so far: {len(trainExamples)}")
+            #print(f"Step {episodeStep}: Action Prob: {pi}")
 
             action = np.random.choice(len(pi), p=pi)
             board, self.curPlayer = self.game.getNextState(board, self.curPlayer, action)

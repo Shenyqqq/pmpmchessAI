@@ -50,6 +50,7 @@ class Arena():
             it += 1
             if verbose:
                 print("Turn ", str(it), "Player ", str(curPlayer))
+                print("Board\n", self.game.game.board)
                 #assert self.display
                 #print("Turn ", str(it), "Player ", str(curPlayer))
                 #self.display(board)
@@ -97,9 +98,9 @@ class Arena():
         draws = 0
         for _ in tqdm(range(num), desc="Arena.playGames (1)"):
             gameResult = self.playGame(verbose=verbose)
-            if gameResult == 1:
+            if gameResult >= 0.5:
                 oneWon += 1
-            elif gameResult == -1:
+            elif gameResult <= -0.5:
                 twoWon += 1
             else:
                 draws += 1
@@ -108,9 +109,9 @@ class Arena():
 
         for _ in tqdm(range(num), desc="Arena.playGames (2)"):
             gameResult = self.playGame(verbose=verbose)
-            if gameResult == -1:
+            if gameResult >= 0.5:
                 oneWon += 1
-            elif gameResult == 1:
+            elif gameResult <= -0.5:
                 twoWon += 1
             else:
                 draws += 1

@@ -79,6 +79,8 @@ class MCTS():
         old_winner = copy.deepcopy(self.game.game.winner)
         old_board = copy.deepcopy(self.game.game.board)
         old_controlled = copy.deepcopy(self.game.game.controlled)
+        old_control_black = copy.deepcopy(self.game.game.control_black)
+        old_control_white = copy.deepcopy(self.game.game.control_white)
 
         try:
             s = self.game.stringRepresentation(canonicalBoard)
@@ -158,5 +160,7 @@ class MCTS():
             self.game.game.winner = old_winner
             self.game.game.board = old_board
             self.game.game.controlled = old_controlled
+            self.game.game.control_black= old_control_black
+            self.game.game.control_white = old_control_white
 
 

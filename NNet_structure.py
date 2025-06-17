@@ -6,10 +6,6 @@ import torch.optim as optim
 import numpy as np
 
 
-
-
-
-
 class GameForNNet():
     """NNet接口"""
     def __init__(self, n=9):
@@ -49,28 +45,31 @@ class GameForNNet():
     def getGameEnded(self, board, player):
         if not self.game.game_over:
             return 0.0
+
         player1_score = self.game.control_black
         player2_score = self.game.control_white
 
         score_diff_p1_perspective = player1_score - player2_score
 
-        rows, cols = self.getBoardSize()
-        board_cells_total = rows * cols
+        EFFECTIVE_MAX_SCORE_DIFFERENCE = 20
 
-        normalized_score_diff = 0.0
-        if board_cells_total > 0:
-            normalized_score_diff = score_diff_p1_perspective / board_cells_total
+        scaled_diff = 0.0
+        if EFFECTIVE_MAX_SCORE_DIFFERENCE > 0:
+            scaled_diff = score_diff_p1_perspective / EFFECTIVE_MAX_SCORE_DIFFERENCE
+            scaled_diff = max(-1.0, min(1.0, scaled_diff))
 
         final_reward_for_p1 = 1e-4
 
         if self.game.winner == 0:
             final_reward_for_p1 = 1e-4
         elif self.game.winner == 1:
-            final_reward_for_p1 = 0.5 + (normalized_score_diff * 0.5)
-            final_reward_for_p1 = min(final_reward_for_p1, 1.0)
+            final_reward_for_p1 = 0.5 + (scaled_diff * 0.5)
+            final_reward_for_p1 = max(0.5, min(1.0, final_reward_for_p1))
         elif self.game.winner == -1:
-            final_reward_for_p1 = -0.5 + (normalized_score_diff * 0.5)
-            final_reward_for_p1 = max(final_reward_for_p1, -1.0)
+            final_reward_for_p1 = -0.5 + (scaled_diff * 0.5)
+            final_reward_for_p1 = max(-1.0, min(-0.5, final_reward_for_p1))
+        #print(f"黑占：{player1_score}, 白占：{player2_score}")
+        #print(f"Cur Player: {player}, Reward: {final_reward_for_p1 * player}")
 
         return final_reward_for_p1 * player
 
