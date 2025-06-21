@@ -74,11 +74,11 @@ def main():
     # 初始化游戏和AI
     game = Game()
     nnet = NNet(game)
-    nnet.load_checkpoint('./temp/', 'checkpoint_31.pth.tar')
+    nnet.load_checkpoint('./temp/', 'checkpoint_32.pth.tar')
 
     # MCTS参数
     args = dotdict({
-        'numMCTSSims': 50,
+        'numMCTSSims': 5,
         'cpuct': 1.0,
         'arenaCompare': 0,
         'dirichlet_alpha': 0.3,
