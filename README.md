@@ -17,7 +17,7 @@ Welcome to **Three-in-a-Row AI**, an exciting new board game where strategy meet
       * Observe AI self-play for insights into its strategy.
       * Enjoy player-vs-player matches.
   * **Web-Based Play:** Instantly jump into a game on our Hugging Face Space, no setup required\!
-      * **Play Now:** [https://huggingface.co/spaces/gumigumi/pmpmchess](https://huggingface.co/spaces/gumigumi/pmpmchess)
+      * **Play Now:** [🤗 Hugging face](https://huggingface.co/spaces/gumigumi/pmpmchess)
       * Utilizes Gradio and Matplotlib for seamless browser-based visualization.
   * **Customizable AI Training:** We provide the tools for you to train an even stronger AI locally or in the cloud (e.g., Alibaba Cloud), allowing for further research and development.
 
@@ -130,7 +130,7 @@ This project is open-source and available under the [Your Chosen License, e.g., 
 
 **gumigumi** - Project Developer
 
-  * GitHub: [https://github.com/your-username](https://www.google.com/search?q=https://github.com/your-username) (Replace with your actual GitHub)
+  * GitHub: [https://github.com/Shenyqqq](https://github.com/Shenyqqq/) (Replace with your actual GitHub)
   * Hugging Face: [https://huggingface.co/gumigumi](https://www.google.com/search?q=https://huggingface.co/gumigumi) (Link to your Hugging Face profile)
 
 -----
