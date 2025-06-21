@@ -1,4 +1,3 @@
-Okay, here's a professional and engaging `README` for your "Three-in-a-Row" AI project, in English, incorporating all your details and a bit of creative flair.
 
 -----
 
@@ -107,7 +106,7 @@ Our currently deployed AI model was trained with the following parameters:
   * `cpuct`: 3 (Exploration constant for MCTS)
   * `numEps`: 50 (Number of self-play games per training iteration)
 
-This model was trained for **15 iterations** and achieved an approximate **80% win rate** against a random initial network.
+This model was trained for **15 iterations** 
 
 **💡 Tip for Training Your Own AI:**
 For effective training, we highly recommend setting `numMCTSSims` to **at least 200**. Values below 200 tend to yield limited or no improvement, regardless of the number of training iterations. Increasing `numMCTSSims` will significantly enhance the AI's search depth and decision-making capabilities.
