@@ -35,7 +35,7 @@ args = dotdict({
     'maxlenOfQueue': 200000,    # Number of game examples to train the neural networks.
     'numMCTSSims': 300,          # Number of games moves for MCTS to simulate.
     'arenaCompare': 40,         # Number of games to play during arena play to determine if new net will be accepted.
-    'cpuct': 1.5,
+    'cpuct': 3,
 
     # checkpoint路径现在指向OSS Bucket内的对象键(key)
     'checkpoint': 'temp/',
@@ -43,7 +43,9 @@ args = dotdict({
     'load_folder_file': ('temp', 'checkpoint_11.pth.tar'), # ('文件夹', '文件名') -> ('对象键前缀', '对象键')
 
     'numItersForTrainExamplesHistory': 20,
-    'maxTotalTrainingExamples': 800000
+    'maxTotalTrainingExamples': 800000,
+    'dirichlet_alpha': 0.3,
+    'dirichlet_epsilon': 0.25,
 })
 
 

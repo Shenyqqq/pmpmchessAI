@@ -68,9 +68,17 @@ class Coach():
         while True:
             episodeStep += 1
             canonicalBoard = self.game.getCanonicalForm(board, self.curPlayer)
-            temp = int(episodeStep < self.args.tempThreshold)
+            decay_end_step = 25  # temp dacay in first 25 steps
+            initial_temp = 1.0
+            final_temp = 0
+            if episodeStep <= decay_end_step:
+                # Linear decay from initial temp to final temp
+                decay_progress = (episodeStep - 1) / decay_end_step
+                temp_value = initial_temp - (initial_temp - final_temp) * decay_progress
+            else:
+                temp_value = final_temp
 
-            pi = self.mcts.getActionProb(canonicalBoard, temp=temp)
+            pi = self.mcts.getActionProb(canonicalBoard, temp=temp_value)
             sym = self.game.getSymmetries(canonicalBoard, pi)
             for b, p in sym:
                 trainExamples.append([b, self.curPlayer, p, None])

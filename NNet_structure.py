@@ -6,10 +6,6 @@ import torch.optim as optim
 import numpy as np
 
 
-
-
-
-
 class GameForNNet():
     """NNet接口"""
     def __init__(self, n=9):
@@ -112,20 +108,12 @@ class GameNNet(nn.Module):
         self.action_size = game.getActionSize()
         self.args = args
 
-        # 输入通道 = 4（棋盘 + 占领信息）
-        self.conv1 = nn.Conv2d(4, args.num_channels, 3, stride=1, padding=1)
-        self.bn1 = nn.BatchNorm2d(args.num_channels)
+        # 初始卷积层：将输入通道 (4) 映射到 num_channels
+        self.start_conv = nn.Conv2d(4, args.num_channels, kernel_size=3, stride=1, padding=1, bias=False)
+        self.start_bn = nn.BatchNorm2d(args.num_channels)
 
-        self.conv2 = nn.Conv2d(args.num_channels, args.num_channels, 3, stride=1, padding=1)
-        self.bn2 = nn.BatchNorm2d(args.num_channels)
+        self.res_blocks = nn.ModuleList([ResBlock(args.num_channels) for _ in range(args.num_res_blocks)])
 
-        self.conv3 = nn.Conv2d(args.num_channels, args.num_channels, 3, stride=1, padding=1)
-        self.bn3 = nn.BatchNorm2d(args.num_channels)
-
-        self.conv4 = nn.Conv2d(args.num_channels, args.num_channels, 3, stride=1, padding=1)
-        self.bn4 = nn.BatchNorm2d(args.num_channels)
-
-        # === Shared layers ===
         self.flat_size = args.num_channels * self.board_x * self.board_y
 
         # === Policy head ===
@@ -141,10 +129,12 @@ class GameNNet(nn.Module):
 
     def forward(self, s):
         # Input shape: (batch_size, 4, board_x, board_y)
-        s = F.relu(self.bn1(self.conv1(s)))
-        s = F.relu(self.bn2(self.conv2(s)))
-        s = F.relu(self.bn3(self.conv3(s)))
-        s = F.relu(self.bn4(self.conv4(s)))
+        # Initial convolution
+        s = F.relu(self.start_bn(self.start_conv(s)))
+
+        # Pass through residual blocks
+        for block in self.res_blocks:
+            s = block(s)
 
         # === Policy head ===
         pi = F.relu(self.policy_bn(self.policy_conv(s)))  # (batch_size, 2, board_x, board_y)
@@ -161,3 +151,25 @@ class GameNNet(nn.Module):
 
         return pi, v
 
+
+class ResBlock(nn.Module):
+    def __init__(self, num_channels):
+        super(ResBlock, self).__init__()
+        self.conv1 = nn.Conv2d(num_channels, num_channels, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(num_channels)
+        self.conv2 = nn.Conv2d(num_channels, num_channels, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn2 = nn.BatchNorm2d(num_channels)
+
+    def forward(self, x):
+        residual = x
+
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = F.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+
+        out += residual
+        out = F.relu(out)
+        return out

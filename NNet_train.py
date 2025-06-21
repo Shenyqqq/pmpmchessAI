@@ -18,11 +18,12 @@ from torch.utils.tensorboard import SummaryWriter
 
 args = dotdict({
     'lr': 0.001,
-    'dropout': 0.3,
+    'dropout': 0,
     'epochs': 10,
     'batch_size': 64,
     'cuda': torch.cuda.is_available(),
-    'num_channels': 512,
+    'num_channels': 128,
+    'num_res_blocks': 8
 })
 
 
@@ -156,14 +157,3 @@ class NNetWrapper():
         except Exception as e:
             print(f"Failed to load checkpoint from OSS. Error: {e}")
             raise  # 重新抛出异常，以便上层可以捕获
-
-
-# --- NNetWrapper2 ---
-# 注意：如果你的项目实际使用此类，请对其进行与NNetWrapper中save/load_checkpoint类似的修改。
-class NNetWrapper2():
-    pass  # (代码省略，保持原样)
-
-
-# The __main__ block is for local testing and doesn't need cloud modifications.
-if __name__ == "__main__":
-    pass  # (代码省略，保持原样)
