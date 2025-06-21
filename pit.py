@@ -74,18 +74,19 @@ def main():
     # 初始化游戏和AI
     game = Game()
     nnet = NNet(game)
-    nnet.load_checkpoint('./temp/', 'best.pth.tar')
+    nnet.load_checkpoint('./temp/', 'checkpoint_31.pth.tar')
 
     # MCTS参数
     args = dotdict({
         'numMCTSSims': 50,
         'cpuct': 1.0,
-        'arenaCompare': 0  # 禁用竞技场比较
+        'arenaCompare': 0,
+        'dirichlet_alpha': 0.3,
+        'dirichlet_epsilon': 0.25,
     })
 
     # 玩家定义
     def human_player(canonical_board):
-        """人类玩家输入处理"""
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -103,14 +104,11 @@ def main():
                                 return action
 
     def ai_player(canonical_board):
-        """AI玩家决策"""
         mcts = MCTS(game, nnet, args)
         return np.argmax(mcts.getActionProb(canonical_board, temp=0))
 
-    # 选择对战模式
-    human_vs_ai = True  # 设为False可观看AI自对战
 
-    # 创建竞技场
+    # 创建竞技场，可修改先手后手
     arena = VisualizedArena(
         game=game,
         player1=ai_player,

@@ -21,12 +21,12 @@ args = dotdict({
     'batch_size': 64,
     'cuda': torch.cuda.is_available(),
     'num_channels': 128,
-    'num_res_blocks': 4
+    'num_res_blocks': 8
 })
 
 class NNetWrapper():
     def __init__(self, game):
-        self.nnet = GameNNet(game, args)  # 必须是支持4通道输入的网络
+        self.nnet = GameNNet(game, args)
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
 
@@ -90,11 +90,8 @@ class NNetWrapper():
                 optimizer.step()
 
     def predict(self, board):
-        """
-        board: np array of shape [H, W, 4]
-        returns: (pi [action_size], v [float])
-        """
-        board = torch.FloatTensor(board.astype(np.float32))
+
+        board = torch.FloatTensor(board.astype(np.float32)) # [H, W, 4]
         board = board.permute(2, 0, 1).unsqueeze(0)  # [1, 4, H, W]
 
         if args.cuda:
@@ -107,7 +104,6 @@ class NNetWrapper():
         return torch.exp(pi).data.cpu().numpy()[0], v.data.cpu().numpy()[0][0]
 
     def loss_pi(self, targets, outputs):
-        # outputs are log probabilities
         return -torch.sum(targets * outputs) / targets.size()[0]
 
     def loss_v(self, targets, outputs):
@@ -217,7 +213,6 @@ class NNetWrapper2():
         }, filepath)
 
     def load_checkpoint(self, folder='checkpoint', filename='checkpoint.pth.tar'):
-        # https://github.com/pytorch/examples/blob/master/imagenet/main.py#L98
         filepath = os.path.join(folder, filename)
         if not os.path.exists(filepath):
             raise ("No model in path {}".format(filepath))
@@ -226,38 +221,3 @@ class NNetWrapper2():
         self.nnet.load_state_dict(checkpoint['state_dict'])
 
 
-if __name__ == "__main__":
-
-    board = GameForNNet().getInitBoard()
-    print(board.shape)
-    board_tensor = torch.tensor(board.transpose(2, 0, 1)).unsqueeze(0).float()  # -> (1, 4, n, n)
-    print(board_tensor.shape)
-    game = GameForNNet()
-    nnet = GameNNet(game, args)
-    pi, v = nnet(board_tensor)  # 应返回 (1, action_size), (1, 1)
-    print(pi.shape,v.shape)
-
-    from utils import *
-    args2 = dotdict({
-        'numIters': 1000,
-        'numEps': 100,              # Number of complete self-play games to simulate during a new iteration.
-        'tempThreshold': 15,        #
-        'updateThreshold': 0.6,     # During arena playoff, new neural net will be accepted if threshold or more of games are won.
-        'maxlenOfQueue': 200000,    # Number of game examples to train the neural networks.
-        'numMCTSSims': 25,          # Number of games moves for MCTS to simulate.
-        'arenaCompare': 40,         # Number of games to play during arena play to determine if new net will be accepted.
-        'cpuct': 1,
-
-        'checkpoint': './temp/',
-        'load_model': False,
-        'load_folder_file': ('/dev/models/8x100x50','best.pth.tar'),
-        'numItersForTrainExamplesHistory': 20,
-
-    })
-
-    nnet = NNetWrapper(game)
-    mcts = MCTS(game, nnet, args2)
-    board = game.getInitBoard()
-    canonical = game.getCanonicalForm(board, player=1)
-    probs = mcts.getActionProb(canonical, temp=1)
-    print(np.sum(probs), probs)  # sum应为1，每个元素对应一个动作

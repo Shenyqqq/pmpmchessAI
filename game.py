@@ -13,6 +13,7 @@ class Game:
         self.max_rounds = 50
         self.control_black = 0
         self.control_white = 0
+        self.n = size
 
     def _update_control_counts(self):
         """更新控制区域计数"""
@@ -199,6 +200,18 @@ class Game:
     def visualize(self):
         visualizer = GameVisualizer(self)
         visualizer.run()
+
+    def display(self,board):
+        self.board = np.zeros((self.n, self.n), dtype=np.int8)
+        self.board[board[:, :, 0] == 1] = 1
+        self.board[board[:, :, 1] == 1] = -1
+        self.controlled = np.zeros((self.n, self.n), dtype=np.int8)
+        self.controlled[board[:, :, 2] == 1] = 1
+        self.controlled[board[:, :, 3] == 1] = -1
+        print("Board")
+        print(self.board)
+        print("Control")
+        print(self.controlled)
 
 
 

@@ -44,34 +44,14 @@ class GameForNNet():
 
     def getGameEnded(self, board, player):
         if not self.game.game_over:
-            return 0.0
+            return 0
 
-        player1_score = self.game.control_black
-        player2_score = self.game.control_white
-
-        score_diff_p1_perspective = player1_score - player2_score
-
-        EFFECTIVE_MAX_SCORE_DIFFERENCE = 20
-
-        scaled_diff = 0.0
-        if EFFECTIVE_MAX_SCORE_DIFFERENCE > 0:
-            scaled_diff = score_diff_p1_perspective / EFFECTIVE_MAX_SCORE_DIFFERENCE
-            scaled_diff = max(-1.0, min(1.0, scaled_diff))
-
-        final_reward_for_p1 = 1e-4
-
-        if self.game.winner == 0:
-            final_reward_for_p1 = 1e-4
-        elif self.game.winner == 1:
-            final_reward_for_p1 = 0.5 + (scaled_diff * 0.5)
-            final_reward_for_p1 = max(0.5, min(1.0, final_reward_for_p1))
-        elif self.game.winner == -1:
-            final_reward_for_p1 = -0.5 + (scaled_diff * 0.5)
-            final_reward_for_p1 = max(-1.0, min(-0.5, final_reward_for_p1))
-        #print(f"黑占：{player1_score}, 白占：{player2_score}")
-        #print(f"Cur Player: {player}, Reward: {final_reward_for_p1 * player}")
-
-        return final_reward_for_p1 * player
+        if self.game.winner == player:
+            return 1
+        elif self.game.winner == -player:
+            return -1
+        else:
+            return 1e-4
 
 
     def getCanonicalForm(self, board, player):
@@ -131,10 +111,8 @@ class GameNNet(nn.Module):
         self.start_conv = nn.Conv2d(4, args.num_channels, kernel_size=3, stride=1, padding=1, bias=False)
         self.start_bn = nn.BatchNorm2d(args.num_channels)
 
-        # 堆叠残差块
         self.res_blocks = nn.ModuleList([ResBlock(args.num_channels) for _ in range(args.num_res_blocks)])
 
-        # === Shared layers ===
         self.flat_size = args.num_channels * self.board_x * self.board_y
 
         # === Policy head ===
@@ -182,15 +160,15 @@ class ResBlock(nn.Module):
         self.bn2 = nn.BatchNorm2d(num_channels)
 
     def forward(self, x):
-        residual = x  # 保存输入，用于跳跃连接
+        residual = x
 
         out = self.conv1(x)
         out = self.bn1(out)
-        out = F.relu(out)  # 激活函数通常在BN之后，跳跃连接之前
+        out = F.relu(out)
 
         out = self.conv2(out)
         out = self.bn2(out)
 
-        out += residual  # 残差连接：将输入加到输出上
-        out = F.relu(out)  # 最后再进行激活
+        out += residual
+        out = F.relu(out)
         return out

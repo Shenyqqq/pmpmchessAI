@@ -36,11 +36,29 @@ class MCTS():
             probs: a policy vector where the probability of the ith action is
                    proportional to Nsa[(s,a)]**(1./temp)
         """
+        s = self.game.stringRepresentation(canonicalBoard)
+        if s not in self.Ps:
+            self.Ps[s], v = self.nnet.predict(canonicalBoard)
+            valids = self.game.getValidMoves(canonicalBoard, 1)
+            self.Ps[s] = self.Ps[s] * valids  #
+            sum_Ps_s = np.sum(self.Ps[s])
+            if sum_Ps_s > 0:
+                self.Ps[s] /= sum_Ps_s
+            else:
+                self.Ps[s] = valids / np.sum(valids)
 
+            self.Vs[s] = valids
+            self.Ns[s] = 0
+            self.Es[s] = self.game.getGameEnded(canonicalBoard, 1)
+
+            # === Dirichlet noise ===
+            dirichlet_noise = np.random.dirichlet([self.args.dirichlet_alpha] * self.game.getActionSize())
+            self.Ps[s] = (1 - self.args.dirichlet_epsilon) * self.Ps[s] + \
+                         self.args.dirichlet_epsilon * dirichlet_noise
         for i in range(self.args.numMCTSSims):
             self.search(canonicalBoard)
 
-        s = self.game.stringRepresentation(canonicalBoard)
+
         counts = [self.Nsa[(s, a)] if (s, a) in self.Nsa else 0 for a in range(self.game.getActionSize())]
 
         if temp == 0:
@@ -81,6 +99,7 @@ class MCTS():
         old_controlled = copy.deepcopy(self.game.game.controlled)
         old_control_black = copy.deepcopy(self.game.game.control_black)
         old_control_white = copy.deepcopy(self.game.game.control_white)
+        old_player = copy.deepcopy(self.game.game.current_player)
 
         try:
             s = self.game.stringRepresentation(canonicalBoard)
@@ -90,7 +109,7 @@ class MCTS():
             else:
                 gameResult = self.game.getGameEnded(canonicalBoard, 1)
                 if gameResult != 0:
-                    self.Es[s] = gameResult  # 只缓存终局状态
+                    self.Es[s] = gameResult
 
             if gameResult != 0:
                 # terminal node
@@ -105,10 +124,6 @@ class MCTS():
                 if sum_Ps_s > 0:
                     self.Ps[s] /= sum_Ps_s  # renormalize
                 else:
-                    # if all valid moves were masked make all valid moves equally probable
-
-                    # NB! All valid moves may be masked if either your NNet architecture is insufficient or you've get overfitting or something else.
-                    # If you have got dozens or hundreds of these messages you should pay attention to your NNet and/or training process.
                     log.error("All valid moves were masked, doing a workaround.")
                     self.Ps[s] = self.Ps[s] + valids
                     self.Ps[s] /= np.sum(self.Ps[s])
@@ -162,5 +177,6 @@ class MCTS():
             self.game.game.controlled = old_controlled
             self.game.game.control_black= old_control_black
             self.game.game.control_white = old_control_white
+            self.game.game.current_player = old_player
 
 

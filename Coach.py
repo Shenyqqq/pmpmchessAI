@@ -61,13 +61,24 @@ class Coach():
         while True:
             episodeStep += 1
             canonicalBoard = self.game.getCanonicalForm(board, self.curPlayer)
-            temp = int(episodeStep < self.args.tempThreshold)
             tempboard = np.zeros((9, 9), dtype=np.int8)
             tempboard[canonicalBoard[:, :, 0] == 1] = 1
             tempboard[canonicalBoard[:, :, 1] == 1] = -1
             #print(f"Episode: {episodeStep}. Board: \n{tempboard}")
 
-            pi = self.mcts.getActionProb(canonicalBoard, temp=temp)
+            decay_end_step = 25  # temp dacay in first 25 steps
+            initial_temp = 1.0
+            final_temp = 0
+
+            if episodeStep <= decay_end_step:
+                # Linear decay from initial temp to final temp
+                decay_progress = (episodeStep - 1) / decay_end_step
+                temp_value = initial_temp - (initial_temp - final_temp) * decay_progress
+            else:
+                temp_value = final_temp
+
+
+            pi = self.mcts.getActionProb(canonicalBoard, temp=temp_value)
             sym = self.game.getSymmetries(canonicalBoard, pi)
             for b, p in sym:
                 trainExamples.append([b, self.curPlayer, p, None])
@@ -100,9 +111,7 @@ class Coach():
 
                 for _ in tqdm(range(self.args.numEps), desc="Self Play"):
                     self.mcts = MCTS(self.game, self.nnet, self.args)  # reset search tree
-                    # 使用 extend 替代 +=，对 deque 来说更标准和高效
                     iterationTrainExamples.extend(self.executeEpisode())
-                    # iterationTrainExamples 的长度在每次 extend 后都会受到 maxlen 的限制
                     #print(f"[Info] Iteration generated {len(iterationTrainExamples)} training samples.")
 
                 # save the iteration examples to the history
@@ -116,8 +125,8 @@ class Coach():
             #    self.trainExamplesHistory.pop(0)
             while self.total_training_examples > self.args.maxTotalTrainingExamples and len(
                     self.trainExamplesHistory) > 0:
-                removed_deque = self.trainExamplesHistory.pop(0)  # 移除最旧的迭代样本
-                self.total_training_examples -= len(removed_deque)  # 从总计数中减去
+                removed_deque = self.trainExamplesHistory.pop(0)
+                self.total_training_examples -= len(removed_deque)
                 log.warning(
                     f"Removed oldest iteration's examples. Current total samples: {self.total_training_examples}"
                 )
@@ -150,7 +159,7 @@ class Coach():
                 prev_win_rate = pwins / total_games
                 draw_rate = draws / total_games
 
-                # ✅ 记录到 TensorBoard
+                # TensorBoard
                 self.writer.add_scalar("Arena/New_Win_Rate", new_win_rate, self.learn_iteration)
                 self.writer.add_scalar("Arena/Prev_Win_Rate", prev_win_rate, self.learn_iteration)
                 self.writer.add_scalar("Arena/Draw_Rate", draw_rate, self.learn_iteration)
@@ -195,51 +204,22 @@ class Coach():
             log.info(
                 f"Loaded {len(self.trainExamplesHistory)} iterations, total samples: {self.total_training_examples}")
 
-            # 2. 在加载后立即执行清理
+            # prune the examples immediately after loading
             self._prune_training_examples()
 
-            # --- 修改结束 ---
-
-            # examples based on the model were already collected (loaded)
             self.skipFirstSelfPlay = True
 
     def _prune_training_examples(self):
-        """
-        Private helper method to prune trainExamplesHistory
-        to ensure total_training_examples stays within maxTotalTrainingExamples.
-        """
+
         initial_total = self.total_training_examples
         while self.total_training_examples > self.args.maxTotalTrainingExamples and len(self.trainExamplesHistory) > 0:
-            removed_deque = self.trainExamplesHistory.pop(0)  # 移除最旧的迭代样本
-            self.total_training_examples -= len(removed_deque)  # 从总计数中减去
+            removed_deque = self.trainExamplesHistory.pop(0)
+            self.total_training_examples -= len(removed_deque)
             log.warning(
                 f"Pruning: Removed oldest iteration's examples. Current total samples: {self.total_training_examples}"
             )
         if initial_total > self.args.maxTotalTrainingExamples and self.total_training_examples <= self.args.maxTotalTrainingExamples:
             log.info(
                 f"Successfully pruned training examples from {initial_total} to {self.total_training_examples} samples.")
-    # --- 辅助方法结束 ---
 
-if __name__=="__main__":
-    game = Game()  # 你的棋类游戏类
-    nnet = NNetWrapper(game)
-    args = dotdict({
-        'numIters': 100,
-        'numEps': 100,  # Number of complete self-play games to simulate during a new iteration.
-        'tempThreshold': 15,  #
-        'updateThreshold': 0.6,
-        # During arena playoff, new neural net will be accepted if threshold or more of games are won.
-        'maxlenOfQueue': 200000,  # Number of game examples to train the neural networks.
-        'numMCTSSims': 25,  # Number of games moves for MCTS to simulate.
-        'arenaCompare': 40,  # Number of games to play during arena play to determine if new net will be accepted.
-        'cpuct': 1,
 
-        'checkpoint': './temp/',
-        'load_model': False,
-        'load_folder_file': ('/dev/models/8x100x50', 'best.pth.tar'),
-        'numItersForTrainExamplesHistory': 20,
-        'num_workers': 8
-    })
-    mcts = MCTS(game, nnet, args)
-    coach = Coach(game, nnet, args)
-    trainExamples = coach.executeEpisode()
