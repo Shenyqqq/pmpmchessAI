@@ -66,7 +66,7 @@ class Coach():
             tempboard[canonicalBoard[:, :, 1] == 1] = -1
             #print(f"Episode: {episodeStep}. Board: \n{tempboard}")
 
-            decay_end_step = 25  # temp dacay in first 25 steps
+            decay_end_step = 20  # temp dacay in first 25 steps
             initial_temp = 1.0
             final_temp = 0
 
