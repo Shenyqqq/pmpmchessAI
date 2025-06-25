@@ -1,13 +1,13 @@
 
 -----
 
-# ♟️ Three-in-a-Row AI
+#  Three-in-a-Row AI
 
 Welcome to **Three-in-a-Row AI**, an exciting new board game where strategy meets simplicity\! Inspired by the captivating mini-game from Yostar's indie title *Pom-Pom*, this game blends the strategic depth of Gomoku (Five-in-a-Row) with the dynamic capture mechanics of Reversi (Othello). Dive in and challenge our AI, powered by the cutting-edge AlphaZero framework\!
 
 -----
 
-## ✨ Features
+## Features
 
   * **Novel Hybrid Gameplay:** Experience a unique blend of "three-in-a-row" objectives and "piece flipping" mechanics.
   * **AlphaZero-Powered AI:** Our AI is trained from scratch using a custom implementation of the AlphaZero reinforcement learning framework, continually learning and improving through self-play.
@@ -22,7 +22,7 @@ Welcome to **Three-in-a-Row AI**, an exciting new board game where strategy meet
 
 -----
 
-## 🧠 Behind the AI: AlphaZero Reinforcement Learning
+## Behind the AI: AlphaZero Reinforcement Learning
 
 This project's AI is built upon a modified version of the renowned **AlphaZero** framework, drawing inspiration from [suragnair/alpha-zero-general](https://github.com/suragnair/alpha-zero-general). Our implementation specifically aligns more closely with the original AlphaZero paper's training methodology.
 
@@ -36,7 +36,7 @@ Due to the inherent computational intensity of self-play learning and the game's
 
 -----
 
-## 🚀 Get Started
+## Get Started
 
 This project is primarily written in **Python** and leverages the **PyTorch** deep learning framework.
 
@@ -98,34 +98,37 @@ Once installed, you can interact with the game and AI in several ways:
 
 -----
 
-## 📈 AI Training Parameters
+## AI Training Parameters
 
 Our currently deployed AI model was trained with the following parameters:
 
   * `numMCTSSims`: 300 (Number of MCTS simulations per move)
   * `cpuct`: 3 (Exploration constant for MCTS)
-  * `numEps`: 50 (Number of self-play games per training iteration)
+  * `numEps`: 80 (Number of self-play games per training iteration)
+  * 'dirichlet_alpha': 0.1 
+  * 'dirichlet_epsilon': 0.25 
+  * 'updateThreshold': 0.6 (During arena playoff, new neural net will be accepted if threshold or more of games are won)
 
-This model was trained for **15 iterations** 
+This model was trained for **25 iterations** , reaching a **86.8% winning rate** against a random model.
 
 **💡 Tip for Training Your Own AI:**
 For effective training, we highly recommend setting `numMCTSSims` to **at least 200**. Values below 200 tend to yield limited or no improvement, regardless of the number of training iterations. Increasing `numMCTSSims` will significantly enhance the AI's search depth and decision-making capabilities.
 
 -----
 
-## 🤝 Contribution
+## Contribution
 
 We welcome contributions to improve this project\! Feel free to open issues for bug reports or feature requests, or submit pull requests with your enhancements.
 
 -----
 
-## 📄 License
+## License
 
-This project is open-source and available under the [Your Chosen License, e.g., MIT License]. See the `LICENSE` file for details.
+None yet.
 
 -----
 
-## 👨‍💻 Author
+## Author
 
 **gumigumi** - Project Developer
 
