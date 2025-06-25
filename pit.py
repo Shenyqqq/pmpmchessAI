@@ -71,18 +71,18 @@ class VisualizedArena:
 
 
 def main():
-    # 初始化游戏和AI
+
     game = Game()
     nnet = NNet(game)
-    nnet.load_checkpoint('./temp/', 'checkpoint_32.pth.tar')
+    nnet.load_checkpoint('./300sim/', 'best.pth.tar') # 修改成正确路径
 
-    # MCTS参数
+    # 修改'numMCTSSims'以控制AI搜索次数
     args = dotdict({
-        'numMCTSSims': 5,
-        'cpuct': 1.0,
+        'numMCTSSims': 300,
+        'cpuct': 2,
         'arenaCompare': 0,
-        'dirichlet_alpha': 0.3,
-        'dirichlet_epsilon': 0.25,
+        'dirichlet_alpha': 0.1,
+        'dirichlet_epsilon': 0.00,
     })
 
     # 玩家定义
@@ -108,7 +108,7 @@ def main():
         return np.argmax(mcts.getActionProb(canonical_board, temp=0))
 
 
-    # 创建竞技场，可修改先手后手
+    # 创建竞技场，可修改先手后手，若想看AI对战，set player1, player2 = ai_player
     arena = VisualizedArena(
         game=game,
         player1=ai_player,
