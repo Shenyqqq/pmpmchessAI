@@ -4,19 +4,19 @@
 
 #  Three-in-a-Row AI
 
-Welcome to **Three-in-a-Row AI**, an exciting new board game where strategy meets simplicity\! Inspired by the captivating mini-game from Hypergryph's indie title *Popucom*, this game blends the strategic depth of Gomoku (Five-in-a-Row) with the dynamic capture mechanics of Reversi (Othello). Dive in and challenge our AI, powered by the cutting-edge AlphaZero framework\!
+Welcome to **Three-in-a-Row AI**, an exciting new board game where strategy meets simplicity\! Inspired by the captivating mini-game from Hypergryph's indie title *Popucom*, this game blends the strategic depth of Gomoku (Five-in-a-Row) with the dynamic capture mechanics of Reversi (Othello). Dive in and challenge my AI, powered by the cutting-edge AlphaZero framework\!
 
 -----
 
 ## Features
 
   * **Novel Hybrid Gameplay:** Experience a unique blend of "three-in-a-row" objectives and "piece flipping" mechanics.
-  * **AlphaZero-Powered AI:** Our AI is trained from scratch using a custom implementation of the AlphaZero reinforcement learning framework, continually learning and improving through self-play.
+  * **AlphaZero-Powered AI:** My AI is trained from scratch using a custom implementation of the AlphaZero reinforcement learning framework, continually learning and improving through self-play.
   * **Interactive GUI:** Engage with the AI or play against friends using a user-friendly Pygame-based graphical interface.
       * Easily swap first/second player.
       * Observe AI self-play for insights into its strategy.
       * Enjoy player-vs-player matches.
-  * **Web-Based Play:** Instantly jump into a game on our Hugging Face Space, no setup required\!
+  * **Web-Based Play:** Instantly jump into a game on my Hugging Face Space, no setup required\!
       * **Play Now:** [🤗 Hugging face](https://huggingface.co/spaces/gumigumi/pmpmchess)
       * Utilizes Gradio and Matplotlib for seamless browser-based visualization.
   * **Customizable AI Training:** I provide the tools for you to train an even stronger AI locally or in the cloud (e.g., Alibaba Cloud), allowing for further research and development.
@@ -25,7 +25,7 @@ Welcome to **Three-in-a-Row AI**, an exciting new board game where strategy meet
 
 ## Behind the AI: AlphaZero Reinforcement Learning
 
-This project's AI is built upon a modified version of the renowned **AlphaZero** framework, drawing inspiration from [suragnair/alpha-zero-general](https://github.com/suragnair/alpha-zero-general). Our implementation specifically aligns more closely with the original AlphaZero paper's training methodology.
+This project's AI is built upon a modified version of the renowned **AlphaZero** framework, drawing inspiration from [suragnair/alpha-zero-general](https://github.com/suragnair/alpha-zero-general). My implementation specifically aligns more closely with the original AlphaZero paper's training methodology.
 
 The AI's intelligence stems from:
 
@@ -33,7 +33,7 @@ The AI's intelligence stems from:
   * **Neural Networks:** A deep neural network is integrated with MCTS to guide the search, predict move probabilities (policy), and evaluate game states (value).
   * **Self-Play Reinforcement Learning:** The AI learns by playing millions of games against itself, iteratively refining its neural network parameters to discover optimal strategies from pure randomness.
 
-Due to the inherent computational intensity of self-play learning and the game's complexity, our current AI's strength is limited by available training time. However, the provided codebase empowers you to continue its evolution\!
+Due to the inherent computational intensity of self-play learning and the game's complexity, my current AI's strength is limited by available training time. However, the provided codebase empowers you to continue its evolution\!
 
 -----
 
@@ -98,7 +98,7 @@ Once installed, you can interact with the game and AI in several ways:
 
 ## AI Training Parameters
 
-Our currently deployed AI model was trained with the following parameters:
+My currently deployed AI model was trained with the following parameters:
 
   * `numMCTSSims`: 300 (Number of MCTS simulations per move)
   * `cpuct`: 3 (Exploration constant for MCTS)
