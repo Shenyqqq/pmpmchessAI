@@ -1,3 +1,5 @@
+[中文](https://github.com/Shenyqqq/pmpmchessAI/edit/NNet-modified/README.zh.md)   [English](https://github.com/Shenyqqq/pmpmchessAI/edit/NNet-modified/README.md)
+
 -----
 
 # 三子棋 AI
