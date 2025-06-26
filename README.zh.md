@@ -1,4 +1,4 @@
-[中文](https://github.com/Shenyqqq/pmpmchessAI/edit/NNet-modified/README.zh.md)   [English](https://github.com/Shenyqqq/pmpmchessAI/edit/NNet-modified/README.md)
+[中文](https://github.com/Shenyqqq/pmpmchessAI/edit/NNet-modified/README.zh.md)   [English](https://github.com/Shenyqqq/pmpmchessAI/blob/NNet-modified/README.md)
 
 -----
 
