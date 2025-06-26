@@ -23,7 +23,7 @@
 
 -----
 
-## AI 幕后：AlphaZero 强化学习
+## 基于 AlphaZero 强化学习
 
 本项目的 AI 基于修改版的著名 **AlphaZero** 框架，灵感来源于 [suragnair/alpha-zero-general](https://github.com/suragnair/alpha-zero-general)。我的实现更接近原始 AlphaZero 论文的训练方法。
 
