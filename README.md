@@ -3,7 +3,7 @@
 
 #  Three-in-a-Row AI
 
-Welcome to **Three-in-a-Row AI**, an exciting new board game where strategy meets simplicity\! Inspired by the captivating mini-game from Yostar's indie title *Pom-Pom*, this game blends the strategic depth of Gomoku (Five-in-a-Row) with the dynamic capture mechanics of Reversi (Othello). Dive in and challenge our AI, powered by the cutting-edge AlphaZero framework\!
+Welcome to **Three-in-a-Row AI**, an exciting new board game where strategy meets simplicity\! Inspired by the captivating mini-game from Hypergryph's indie title *Popucom*, this game blends the strategic depth of Gomoku (Five-in-a-Row) with the dynamic capture mechanics of Reversi (Othello). Dive in and challenge our AI, powered by the cutting-edge AlphaZero framework\!
 
 -----
 
@@ -49,24 +49,21 @@ This project is primarily written in **Python** and leverages the **PyTorch** de
 
 1.  **Clone the Repository:**
 
-    ```bash
-    git clone https://github.com/your-username/your-three-in-a-row-ai.git # Replace with your actual repo
-    cd your-three-in-a-row-ai
+    ```cmd
+    git clone https://github.com/Shenyqqq/pmpmchessAI.git 
     ```
 
 2.  **Create a Virtual Environment (Recommended):**
 
-    ```bash
+    ```cmd
     python -m venv venv
-    # Activate on macOS/Linux
-    source venv/bin/activate
     # Activate on Windows
     .\venv\Scripts\activate
     ```
 
 3.  **Install Dependencies:**
 
-    ```bash
+    ```cmd
     pip install numpy pygame torch tqdm
     # For CUDA support (if you have an NVIDIA GPU):
     # pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 # Replace cu118 with your CUDA version
@@ -76,25 +73,25 @@ This project is primarily written in **Python** and leverages the **PyTorch** de
 
 Once installed, you can interact with the game and AI in several ways:
 
-1.  **Play the Game Directly (Player vs. Player or AI vs. AI):**
+1.  **Play the Game Directly (Player vs. Player):**
 
-    ```bash
+    ```cmd
     python game.py
     ```
 
-2.  **Challenge the AI (Player vs. AI):**
+2.  **Challenge the AI (Player vs. AI or AI vs. AI):**
 
-    ```bash
+    ```cmd
     python pit.py
     ```
 
 3.  **Train Your Own AI:**
 
-    ```bash
+    ```cmd
     python main.py
     ```
 
-    *(Refer to `config.py` for training parameters. We provide two versions for local and Alibaba Cloud training.)*
+    Notice: (I provide a version for Aliyun training in *for-aliyun* branch)
 
 -----
 
@@ -109,7 +106,7 @@ Our currently deployed AI model was trained with the following parameters:
   * 'dirichlet_epsilon': 0.25 
   * 'updateThreshold': 0.6 (During arena playoff, new neural net will be accepted if threshold or more of games are won)
 
-This model was trained for **25 iterations** , reaching a **86.8% winning rate** against a random model.
+This model was trained for **25 iterations** , reaching a **86.8% winning rate** against a random model. You can test your model by running *PitAgainstRandomModel.py*
 
 **💡 Tip for Training Your Own AI:**
 For effective training, we highly recommend setting `numMCTSSims` to **at least 200**. Values below 200 tend to yield limited or no improvement, regardless of the number of training iterations. Increasing `numMCTSSims` will significantly enhance the AI's search depth and decision-making capabilities.
@@ -132,7 +129,7 @@ None yet.
 
 **gumigumi** - Project Developer
 
-  * GitHub: [https://github.com/Shenyqqq](https://github.com/Shenyqqq/) (Replace with your actual GitHub)
-  * Hugging Face: [https://huggingface.co/gumigumi](https://www.google.com/search?q=https://huggingface.co/gumigumi) (Link to your Hugging Face profile)
+  * GitHub: [https://github.com/Shenyqqq](https://github.com/Shenyqqq/) 
+  * Hugging Face: [https://huggingface.co/gumigumi](https://www.google.com/search?q=https://huggingface.co/gumigumi) 
 
 -----
