@@ -2,11 +2,9 @@ import os
 import pickle
 import logging
 
-# 配置日志，让你能看到程序运行的信息
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
-# 定义你的文件路径
 # 请将 'F:\\PythonProject\\pmpmchess\\temp' 替换为你实际的文件夹路径
 LOAD_FOLDER = 'F:\\PythonProject\\pmpmchess\\temp'
 
@@ -14,7 +12,6 @@ LOAD_FOLDER = 'F:\\PythonProject\\pmpmchess\\temp'
 FILE_TO_MERGE_1 = 'checkpoint_4.pth.tar.examples'
 FILE_TO_MERGE_2 = 'checkpoint_8.pth.tar.examples'
 
-# 合并后的新文件名
 MERGED_FILENAME = 'merged_checkpoint.pth.tar.examples'
 
 def load_examples(folder, filename):
