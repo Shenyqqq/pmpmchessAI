@@ -8,8 +8,9 @@ import sys
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-from game import Game  # <--- 确认这里导入的Game类路径正确
+from game import Game  
 
+# 替换为你的实际路径
 LOAD_FOLDER = 'F:\\PythonProject\\pmpmchess\\temp'
 
 EXAMPLES_FILENAME = 'checkpoint_6.pth.tar.examples'
