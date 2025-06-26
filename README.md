@@ -18,7 +18,7 @@ Welcome to **Three-in-a-Row AI**, an exciting new board game where strategy meet
   * **Web-Based Play:** Instantly jump into a game on our Hugging Face Space, no setup required\!
       * **Play Now:** [🤗 Hugging face](https://huggingface.co/spaces/gumigumi/pmpmchess)
       * Utilizes Gradio and Matplotlib for seamless browser-based visualization.
-  * **Customizable AI Training:** We provide the tools for you to train an even stronger AI locally or in the cloud (e.g., Alibaba Cloud), allowing for further research and development.
+  * **Customizable AI Training:** I provide the tools for you to train an even stronger AI locally or in the cloud (e.g., Alibaba Cloud), allowing for further research and development.
 
 -----
 
@@ -109,13 +109,13 @@ Our currently deployed AI model was trained with the following parameters:
 This model was trained for **25 iterations** , reaching a **86.8% winning rate** against a random model. You can test your model by running *PitAgainstRandomModel.py*
 
 **💡 Tip for Training Your Own AI:**
-For effective training, we highly recommend setting `numMCTSSims` to **at least 200**. Values below 200 tend to yield limited or no improvement, regardless of the number of training iterations. Increasing `numMCTSSims` will significantly enhance the AI's search depth and decision-making capabilities.
+For effective training, I highly recommend setting `numMCTSSims` to **at least 200**. Values below 200 tend to yield limited or no improvement, regardless of the number of training iterations. Increasing `numMCTSSims` will significantly enhance the AI's search depth and decision-making capabilities.
 
 -----
 
 ## Contribution
 
-We welcome contributions to improve this project\! Feel free to open issues for bug reports or feature requests, or submit pull requests with your enhancements.
+I welcome contributions to improve this project\! Feel free to open issues for bug reports or feature requests, or submit pull requests with your enhancements.
 
 -----
 
