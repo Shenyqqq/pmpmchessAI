@@ -131,6 +131,6 @@ None yet.
 **gumigumi** - Project Developer
 
   * GitHub: [https://github.com/Shenyqqq](https://github.com/Shenyqqq/) 
-  * Hugging Face: [https://huggingface.co/gumigumi](https://www.google.com/search?q=https://huggingface.co/gumigumi) 
+  * Hugging Face: [https://huggingface.co/gumigumi](https://huggingface.co/gumigumi)
 
 -----
