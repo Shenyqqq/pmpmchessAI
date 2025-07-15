@@ -2,9 +2,9 @@
 
 -----
 
-#  Three-in-a-Row AI
+#  Pmpmchess AI
 
-Welcome to **Three-in-a-Row AI**, an exciting new board game where strategy meets simplicity\! Inspired by the captivating mini-game from Hypergryph's indie title *Popucom*, this game blends the strategic depth of Gomoku (Five-in-a-Row) with the dynamic capture mechanics of Reversi (Othello). Dive in and challenge my AI, powered by the cutting-edge AlphaZero framework\!
+Welcome to **Pmpmchess AI**, an exciting new board game where strategy meets simplicity\! Inspired by the captivating mini-game from Hypergryph's indie title *Popucom*, this game blends the strategic depth of Gomoku (Five-in-a-Row) with the dynamic capture mechanics of Reversi (Othello). Dive in and challenge my AI, powered by the cutting-edge AlphaZero framework\!
 
 -----
 
